@@ -249,6 +249,9 @@ function AdminDashboard() {
         </nav>
 
         <div className="ma-sidebar-foot">
+          <Link to="/admin/import" className="ma-nav-item">
+            <FileUp size={19} /> Bulk Import
+          </Link>
           <Link to="/" className="ma-nav-item">
             <Store size={19} /> View Shop
           </Link>
@@ -262,7 +265,45 @@ function AdminDashboard() {
         {section === "overview" && (
           <>
             <h1 className="ma-page-title">Overview</h1>
-            <p className="ma-page-sub">A quick snapshot of your shop today.</p>
+            <p className="ma-page-sub">A quick snapshot of your shop today. Financial KPIs cover the last 30 days.</p>
+
+            {/* Financial KPI cards */}
+            <div className="ma-stats">
+              <div className="ma-stat">
+                <span className="ma-stat-icon green"><TrendingUp size={22} /></span>
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.revenue) : "—"}</span>
+                <span className="ma-stat-label">Revenue (30d)</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-icon"><BarChart3 size={22} /></span>
+                <span className="ma-stat-val">{kpi ? kpi.units : "—"}</span>
+                <span className="ma-stat-label">Units Sold (30d)</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-icon"><DollarSign size={22} /></span>
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.costTotal) : "—"}</span>
+                <span className="ma-stat-label">Total Costs (30d)</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.costIngredients) : "—"}</span>
+                <span className="ma-stat-label">· Ingredients</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.costPackaging) : "—"}</span>
+                <span className="ma-stat-label">· Packaging</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.costMisc) : "—"}</span>
+                <span className="ma-stat-label">· Miscellaneous</span>
+              </div>
+              <div className="ma-stat">
+                <span className="ma-stat-icon red"><AlertCircle size={22} /></span>
+                <span className="ma-stat-val">{kpi ? fmtBirr(kpi.unpaidPremises) : "—"}</span>
+                <span className="ma-stat-label">Unpaid Premises</span>
+              </div>
+            </div>
+
+            {/* Inventory & order overview */}
             <div className="ma-stats">
               <div className="ma-stat">
                 <span className="ma-stat-icon"><Boxes size={22} /></span>
