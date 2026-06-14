@@ -3,8 +3,10 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import {
   Cake, LayoutGrid, ShoppingBag, LogOut, Store,
   Boxes, CheckCircle2, XCircle, Tag, Plus, Pencil, Trash2, Upload, X,
+  DollarSign, Building2, BarChart3,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { CostsSection, PremisesSection, SalesSection } from "@/components/sweet-bloom/AdminFinance";
 import "@/components/sweet-bloom/menu-admin.css";
 
 export const Route = createFileRoute("/admin/")({
@@ -15,7 +17,7 @@ export const Route = createFileRoute("/admin/")({
 const fmtBirr = (n: number) =>
   `Birr ${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
-type Section = "overview" | "orders" | "menu";
+type Section = "overview" | "orders" | "menu" | "costs" | "premises" | "sales";
 
 type ShopItem = {
   id: string;
@@ -171,6 +173,9 @@ function AdminDashboard() {
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "orders", label: "Orders", icon: ShoppingBag },
     { id: "menu", label: "Shop Items", icon: Tag },
+    { id: "sales", label: "Sales Tracking", icon: BarChart3 },
+    { id: "costs", label: "Costs", icon: DollarSign },
+    { id: "premises", label: "Premises", icon: Building2 },
   ];
 
   return (
@@ -428,6 +433,10 @@ function AdminDashboard() {
             </section>
           </>
         )}
+
+        {section === "costs" && <CostsSection />}
+        {section === "premises" && <PremisesSection />}
+        {section === "sales" && <SalesSection />}
       </main>
 
       {editing && (
