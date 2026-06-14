@@ -38,7 +38,7 @@ export const listCosts = createServerFn({ method: "GET" })
       .from("operational_costs")
       .select("*")
       .order("date_incurred", { ascending: false });
-    if (data.category) q = q.eq("category", data.category);
+    if (data.category) q = q.eq("category", data.category as any);
     if (data.from) q = q.gte("date_incurred", data.from);
     if (data.to) q = q.lte("date_incurred", data.to);
     const { data: rows, error } = await q;
@@ -115,7 +115,7 @@ export const listPremises = createServerFn({ method: "GET" })
       .from("premises_expenses")
       .select("*")
       .order("due_date", { ascending: false });
-    if (data.status) q = q.eq("status", data.status);
+    if (data.status) q = q.eq("status", data.status as any);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
     return { premises: rows };
