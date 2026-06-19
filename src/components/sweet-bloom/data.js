@@ -16,7 +16,28 @@
         aboutVisit: "Visit us",
         aboutHours: "Mon–Sun · Open Daily<br/>Addis Ababa, Ethiopia",
         chefSpecial: "Baker's Choice", ingredients: "Key Ingredients", extras: "Complimentary Extras",
-        cats: { all: "All", birthday: "Birthday", wedding: "Wedding", desserts: "Desserts", hampers: "Hampers", anniversary: "Anniversary", graduation: "Graduation", others: "Others" }
+        cats: {
+          all: "All",
+          "bridal-shower": "Bridal Shower",
+          "baby-shower": "Baby Shower",
+          christening: "Christening",
+          engagement: "Engagement",
+          "six-month": "6-Month Cake",
+          "cake-package": "Cake & Package",
+          "graduation-kids": "Graduation for Kids",
+          nikah: "Nikah Cake",
+          "mini-cake": "Mini Cake",
+          torta: "Torta",
+          graduation: "Graduation Cake",
+          "birthday-girls": "Birthday — Girls",
+          "birthday-boys": "Birthday — Boys",
+          "birthday-women": "Birthday — Adult Women",
+          "birthday-men": "Birthday — Adult Men",
+          proposal: "Proposal Cake",
+          anniversary: "Anniversary Cake",
+          wedding: "Wedding Cake",
+          evangelina: "Evangelina / Custom"
+        }
       },
       am: {
         heroTitle: 'ሰላም ኬክ እና አርትስ፣ <span class="accent">በፍቅር የተሠራ።</span>',
