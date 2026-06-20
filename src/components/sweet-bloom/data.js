@@ -24,18 +24,11 @@
           engagement: "Engagement",
           "six-month": "6-Month Cake",
           "cake-package": "Cake & Package",
-          "graduation-kids": "Graduation for Kids",
           nikah: "Nikah Cake",
           "mini-cake": "Mini Cake",
           torta: "Torta",
-          graduation: "Graduation Cake",
-          "birthday-girls": "Birthday — Girls",
-          "birthday-boys": "Birthday — Boys",
-          "birthday-women": "Birthday — Adult Women",
-          "birthday-men": "Birthday — Adult Men",
           proposal: "Proposal Cake",
           anniversary: "Anniversary Cake",
-          wedding: "Wedding Cake",
           evangelina: "Evangelina / Custom"
         }
       },
