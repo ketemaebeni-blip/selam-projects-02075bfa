@@ -56,18 +56,11 @@
       engagement: "ምርመራ",
       "six-month": "6-ወር ኬክ",
       "cake-package": "ኬክ እና ጥቅል",
-      "graduation-kids": "የህጻናት ምረቃ",
       nikah: "ኒካህ ኬክ",
       "mini-cake": "ሚኒ ኬክ",
       torta: "ቶርታ",
-      graduation: "ምረቃ ኬክ",
-      "birthday-girls": "ልደት — ህጻናት",
-      "birthday-boys": "ልደት — ወንድ ልጆች",
-      "birthday-women": "ልደት — ከ20 ዓመት ላይ",
-      "birthday-men": "ልደት — ከ20 ዓመት ላይ",
       proposal: "የጥያቄ ኬክ",
       anniversary: "ዓመታዊ",
-      wedding: "ሰርግ",
       evangelina: "ኢቫንጀሊና / ጌጥ"
     }
   },
