@@ -1809,8 +1809,31 @@
     Object.defineProperty(window, 'cart', { get: () => cart, set: v => { cart = v; } });
 
     // ================= INIT =================
+    function renderCategoryGrid() {
+      const grid = document.getElementById('categoryGrid');
+      if (!grid) return;
+      const entries = Object.entries(categoryMeta);
+      grid.innerHTML = entries.map(([id, m], i) => `
+        <div class="product-card fade-up" style="animation-delay:${(i%6)*0.05}s" onclick="openCategory('${id}')" role="button" tabindex="0" aria-label="${m.title}">
+          <img src="${m.img}" alt="${m.title}" class="product-card-img" loading="lazy" />
+          <div class="product-card-body">
+            <div class="product-card-name">${m.title}</div>
+            <div class="product-card-sub">${m.sub}</div>
+            <div class="product-card-rule"></div>
+            <div class="product-card-foot">
+              <div style="width:28px;height:28px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;margin-left:auto;">
+                <i data-lucide="arrow-right" style="width:12px;height:12px;color:var(--choc-mid);stroke-width:2.5;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
+      renderCategoryGrid();
       updateNavIndicator();
       setTimeout(() => {
         const splash = document.getElementById('splash-overlay');
