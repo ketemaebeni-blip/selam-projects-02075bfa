@@ -473,6 +473,27 @@
       color: var(--choc);
     }
 
+    .size-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 4px;
+    }
+    .size-opt { cursor: pointer; }
+    .size-opt input { position: absolute; opacity: 0; pointer-events: none; }
+    .size-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 10px; border-radius: 999px;
+      background: var(--blush); color: var(--choc);
+      font-size: .72rem; font-weight: 700;
+      border: 1.5px solid transparent; transition: all .15s ease;
+    }
+    .size-pill em { font-style: normal; color: var(--choc-mid); font-weight: 600; }
+    .size-opt input:checked + .size-pill {
+      background: var(--choc); color: #fff; border-color: var(--choc);
+    }
+    .size-opt input:checked + .size-pill em { color: rgba(255,255,255,.85); }
+
     .stepper {
       display: flex;
       align-items: center;
