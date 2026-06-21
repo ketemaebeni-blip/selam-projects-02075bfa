@@ -2001,7 +2001,11 @@
         existing.qty += delta;
         if (existing.qty <= 0) cart = cart.filter(c => c.id !== id);
       } else if (delta > 0) {
-        cart.push({ id, qty: 1, name: product.name, price: product.price, img: product.img });
+        const sizeIdx = window.selectedSize?.[id] ?? 0;
+        const useSize = product.sizes ? product.sizes[sizeIdx] : null;
+        const price = useSize ? useSize.price : product.price;
+        const nameWithSize = useSize ? `${product.name} (${useSize.label})` : product.name;
+        cart.push({ id, qty: 1, name: nameWithSize, price, img: product.img });
       }
 
       const qtyEl = document.getElementById('qty-' + id);
