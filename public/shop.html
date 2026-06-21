@@ -1769,19 +1769,35 @@
     // Products are loaded from the database (shop_items table). Admins manage all items
     // from /admin — what they add/edit/delete/toggle there is exactly what shows here.
     let products = {
-      fasting: [], kerestena: [], yeshemgelena: [],
-      graduation: [], wedding: [], birthday: [],
+      'bridal-shower': [], 'baby-shower': [], christening: [], engagement: [],
+      'six-month': [], 'cake-package': [], 'graduation-kids': [], nikah: [],
+      'mini-cake': [], torta: [], graduation: [],
+      'birthday-girls': [], 'birthday-boys': [], 'birthday-women': [], 'birthday-men': [],
+      proposal: [], anniversary: [], wedding: [], evangelina: [],
     };
 
     let availableToday = [];
 
     const categoryMeta = {
-      fasting: { title: 'Fasting Cakes', sub: 'Plant-based & vegan-friendly', badge: 'Vegan', img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=600&fit=crop' },
-      kerestena: { title: 'Kerestena', sub: 'Holy communion & christening', badge: 'Holy', img: 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=800&h=600&fit=crop' },
-      yeshemgelena: { title: 'Yeshemgelena', sub: 'Baby showers & gender reveals', badge: 'Baby', img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=600&fit=crop' },
-      graduation: { title: 'Graduation', sub: 'Celebrate achievements', badge: 'Grad', img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&h=600&fit=crop' },
-      wedding: { title: 'Wedding', sub: 'Timeless elegance', badge: 'Love', img: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&h=600&fit=crop' },
-      birthday: { title: 'Birthday', sub: 'For every age', badge: 'Party', img: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=600&fit=crop' },
+      'bridal-shower':   { title: 'Bridal Shower',     sub: 'Elegant pre-wedding cakes',     badge: 'Bridal',  img: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&h=600&fit=crop' },
+      'baby-shower':     { title: 'Baby Shower',       sub: 'Sweet welcomes for little ones', badge: 'Baby',    img: 'https://images.unsplash.com/photo-1606313564200-e75d5e30476c?w=800&h=600&fit=crop' },
+      christening:       { title: 'Christening',       sub: 'Blessed celebration cakes',     badge: 'Holy',    img: 'https://images.unsplash.com/photo-1557925923-cd4648e211a0?w=800&h=600&fit=crop' },
+      engagement:        { title: 'Engagement',        sub: 'Mark the proposal in style',    badge: 'Love',    img: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800&h=600&fit=crop' },
+      'six-month':       { title: '6-Month',           sub: 'Half-birthday milestone cakes', badge: '6M',      img: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&h=600&fit=crop' },
+      'cake-package':    { title: 'Cake & Package',    sub: 'Curated sweet gift boxes',      badge: 'Gift',    img: 'https://images.unsplash.com/photo-1607920591413-4ec007e70023?w=800&h=600&fit=crop' },
+      'graduation-kids': { title: 'Graduation for Kids', sub: "Cheer little graduates",      badge: 'Kids',    img: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?w=800&h=600&fit=crop' },
+      nikah:             { title: 'Nikah',             sub: 'Romantic nikah celebration',    badge: 'Nikah',   img: 'https://images.unsplash.com/photo-1622896784083-cc051313dbab?w=800&h=600&fit=crop' },
+      'mini-cake':       { title: 'Mini Cake',         sub: 'Single-serve sweet treats',     badge: 'Mini',    img: 'https://images.unsplash.com/photo-1486427944299-d1955d23e34d?w=800&h=600&fit=crop' },
+      torta:             { title: 'Torta',             sub: 'Creamy layered classics',       badge: 'Torta',   img: 'https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=800&h=600&fit=crop' },
+      graduation:        { title: 'Graduation',        sub: 'Celebrate achievements',        badge: 'Grad',    img: 'https://images.unsplash.com/photo-1525351484163-7529414344d8?w=800&h=600&fit=crop' },
+      'birthday-girls':  { title: 'Birthday — Girls',  sub: 'Themed cakes for girls',        badge: 'Girls',   img: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&h=600&fit=crop' },
+      'birthday-boys':   { title: 'Birthday — Boys',   sub: 'Fun cakes for boys',            badge: 'Boys',    img: 'https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=800&h=600&fit=crop' },
+      'birthday-women':  { title: 'Birthday — Women',  sub: 'Elegant cakes for her',         badge: 'Women',   img: 'https://images.unsplash.com/photo-1557925923-cd4648e211a0?w=800&h=600&fit=crop' },
+      'birthday-men':    { title: 'Birthday — Men',    sub: 'Bold cakes for him',            badge: 'Men',     img: 'https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=800&h=600&fit=crop' },
+      proposal:          { title: 'Proposal',          sub: 'Will-you-marry-me cakes',       badge: 'Romance', img: 'https://images.unsplash.com/photo-1551106652-a5bcf4b29ab6?w=800&h=600&fit=crop' },
+      anniversary:       { title: 'Anniversary',       sub: 'Celebrate your milestones',     badge: 'Anniv',   img: 'https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=800&h=600&fit=crop' },
+      wedding:           { title: 'Wedding',           sub: 'Timeless elegance',             badge: 'Love',    img: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=800&h=600&fit=crop' },
+      evangelina:        { title: 'Evangelina',        sub: 'Signature custom designs',      badge: 'Custom',  img: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=600&fit=crop' },
     };
 
     // ================= STATE =================
