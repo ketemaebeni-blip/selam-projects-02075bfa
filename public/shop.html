@@ -1903,14 +1903,24 @@
       document.getElementById('detailSubtitle').textContent = meta.title + ' Designs';
 
       const list = document.getElementById('productList');
-      list.innerHTML = products[cat].map((p, i) => `
+      list.innerHTML = products[cat].map((p, i) => {
+        const sizeBlock = p.sizes ? `
+          <div class="size-selector" role="radiogroup" aria-label="Choose size for ${p.name}">
+            ${p.sizes.map((s, si) => `
+              <label class="size-opt">
+                <input type="radio" name="size-${p.id}" value="${si}" ${si===0?'checked':''} onchange="setProductSize('${p.id}', ${si})" />
+                <span class="size-pill"><strong>${s.label}</strong><em>$${s.price}</em></span>
+              </label>`).join('')}
+          </div>` : '';
+        return `
         <div class="product-list-item fade-up d${i+1}" style="animation-delay:${i*0.06}s">
           <img src="${p.img}" alt="${p.name}" class="product-list-img" loading="lazy" />
           <div class="product-list-info">
             <div class="product-list-name">${p.name}</div>
             <div class="product-list-sub">${p.sub}</div>
+            ${sizeBlock}
             <div class="product-list-foot">
-              <span class="product-list-price">$${p.price}</span>
+              <span class="product-list-price" id="price-${p.id}">$${p.sizes ? p.sizes[0].price : p.price}</span>
               <div class="stepper">
                 <button class="step-btn minus" onclick="updateCart('${p.id}', -1, '${cat}')" aria-label="Decrease quantity">−</button>
                 <span class="step-count" id="qty-${p.id}">${getQty(p.id)}</span>
@@ -1918,11 +1928,21 @@
               </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
 
       document.getElementById('page-detail').classList.add('active');
       lucide.createIcons();
+    }
+
+    window.selectedSize = window.selectedSize || {};
+    function setProductSize(id, idx) {
+      window.selectedSize[id] = idx;
+      const allProducts = Object.values(products).flat();
+      const p = allProducts.find(x => x.id === id);
+      if (!p || !p.sizes) return;
+      const priceEl = document.getElementById('price-' + id);
+      if (priceEl) priceEl.textContent = '$' + p.sizes[idx].price;
     }
 
     function closeDetail() {
