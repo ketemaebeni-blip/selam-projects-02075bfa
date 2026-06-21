@@ -111,7 +111,7 @@
       overflow-x: hidden;
       -webkit-overflow-scrolling: touch;
       overscroll-behavior-y: contain;
-      padding-bottom: calc(var(--nav-h) + var(--safe-bottom) + 20px);
+      padding-bottom: calc(var(--safe-bottom) + 20px);
     }
 
     .top-nav {
@@ -1492,101 +1492,6 @@
           </div>
         </div>
 
-        <section class="section-pad" aria-labelledby="menuHeading">
-          <div class="fade-up" style="margin-bottom:16px;">
-            <div class="sec-label">
-              <i data-lucide="sun" style="width:12px;height:12px;color:var(--choc-mid);stroke-width:2.5;"></i>
-              What's Fresh
-            </div>
-            <h2 id="menuHeading" class="sec-title">Today's Menu</h2>
-          </div>
-
-          <div class="card-grid">
-            <div class="product-card fade-up d1" onclick="openCategory('fasting')" role="button" tabindex="0" aria-label="Fasting Cakes">
-              <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=400&h=300&fit=crop" alt="Fasting cakes" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Fasting Cakes</div>
-                <div class="product-card-sub">Plant-based, vegan-friendly delights</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:var(--choc-mid);stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="product-card fade-up d2" onclick="openCategory('kerestena')" role="button" tabindex="0" aria-label="Kerestena Cakes">
-              <img src="https://images.unsplash.com/photo-1535141192574-5d4897c12636?w=400&h=300&fit=crop" alt="Kerestena cake" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Kerestena</div>
-                <div class="product-card-sub">Holy communion & christening cakes</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:var(--blush);display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:var(--choc-mid);stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="product-card fade-up d3" onclick="openCategory('yeshemgelena')" role="button" tabindex="0" aria-label="Yeshemgelena Cakes">
-              <img src="https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=400&h=300&fit=crop" alt="Yeshemgelena cakes" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Yeshemgelena</div>
-                <div class="product-card-sub">Baby shower & gender reveal cakes</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:#F3F0FF;display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:#6B3AED;stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="product-card fade-up d4" onclick="openCategory('graduation')" role="button" tabindex="0" aria-label="Graduation Cakes">
-              <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?w=400&h=300&fit=crop" alt="Graduation cakes" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Graduation</div>
-                <div class="product-card-sub">Celebrate achievements in style</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:#FFFBEB;display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:#D97706;stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="product-card fade-up d5" onclick="openCategory('wedding')" role="button" tabindex="0" aria-label="Wedding and Anniversary Cakes">
-              <img src="https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=400&h=300&fit=crop" alt="Wedding cakes" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Wedding</div>
-                <div class="product-card-sub">Timeless elegance for your special day</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:#ECFDF5;display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:#059669;stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="product-card fade-up d6" onclick="openCategory('birthday')" role="button" tabindex="0" aria-label="Birthday and Celebration Cakes">
-              <img src="https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=400&h=300&fit=crop" alt="Birthday cakes" class="product-card-img" loading="lazy" />
-              <div class="product-card-body">
-                <div class="product-card-name">Birthday</div>
-                <div class="product-card-sub">For every age and occasion</div>
-                <div class="product-card-rule"></div>
-                <div class="product-card-foot">
-                  <div style="width:28px;height:28px;border-radius:50%;background:#FFF0F3;display:flex;align-items:center;justify-content:center;margin-left:auto;">
-                    <i data-lucide="arrow-right" style="width:12px;height:12px;color:#E11D48;stroke-width:2.5;"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </div>
 
@@ -1753,37 +1658,9 @@
       </div>
     </div>
 
-    <!-- ============================================
-         MODERN BOTTOM NAVIGATION
-         ============================================ -->
-    <nav class="bottom-nav" role="navigation" aria-label="Main navigation">
-      <div class="nav-pill-bar">
-        <!-- Sliding active indicator -->
-        <div class="nav-indicator" id="navIndicator"></div>
-
-        <button class="nav-item active" id="nav-home" onclick="goPage('home')" aria-label="Home" aria-current="page">
-          <div class="nav-icon-wrap">
-            <i data-lucide="home" style="width:22px;height:22px;color:rgba(255,255,255,.9);stroke-width:2;"></i>
-          </div>
-          <span class="nav-label">Home</span>
-        </button>
-
-        <div class="nav-center-wrap">
-          <button class="nav-center-btn" onclick="openCart()" aria-label="View cart">
-            <i data-lucide="shopping-bag" style="width:24px;height:24px;color:var(--choc);stroke-width:2;"></i>
-            <span id="navCartBadge" class="nav-pill">0</span>
-          </button>
-          <div id="navTotal" class="nav-total-label"></div>
-        </div>
-
-        <button class="nav-item" id="nav-about" onclick="goPage('about')" aria-label="About Us">
-          <div class="nav-icon-wrap">
-            <i data-lucide="info" style="width:22px;height:22px;color:rgba(255,255,255,.4);stroke-width:2;"></i>
-          </div>
-          <span class="nav-label">About</span>
-        </button>
-      </div>
-    </nav>
+    <!-- Hidden nav placeholders (kept so existing scripts don't error) -->
+    <span id="navCartBadge" class="nav-pill" style="display:none;">0</span>
+    <span id="navTotal" class="nav-total-label" style="display:none;"></span>
 
     <!-- HOME INDICATOR -->
     <div class="home-indicator"></div>
