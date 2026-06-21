@@ -1768,10 +1768,28 @@
     // ================= DATA =================
     // Products are loaded from the database (shop_items table). Admins manage all items
     // from /admin — what they add/edit/delete/toggle there is exactly what shows here.
+    const MINI = (id) => `/__l5e/assets-v1/${id}`;
     let products = {
       'bridal-shower': [], 'baby-shower': [], christening: [], engagement: [],
       'six-month': [], 'cake-package': [], 'graduation-kids': [], nikah: [],
-      'mini-cake': [], torta: [], graduation: [],
+      'mini-cake': [
+        { id: 'mini-1',  name: 'Blue Ribbon Mini',     sub: 'Light blue buttercream with ribbons', price: 18, img: MINI('f950a66a-099d-4efa-abba-5f006edf02bd/mini-1.jpg') },
+        { id: 'mini-2',  name: 'Arsenal Fan Mini',     sub: 'Custom team-themed cake',             price: 22, img: MINI('81051af5-e092-4bdd-baeb-4d67e4957c5f/mini-2.jpg') },
+        { id: 'mini-3',  name: 'Mama Rose Mini',       sub: 'Red velvet with sugar rose',          price: 24, img: MINI('0119b1c6-2bbd-4e40-89bb-799876a0a7d7/mini-3.jpg') },
+        { id: 'mini-4',  name: 'Cream Bow Mini',       sub: 'Cream cake with pink piped bows',     price: 20, img: MINI('3f60555e-10c8-40ec-a7da-cc58a51a3fa7/mini-4.jpg') },
+        { id: 'mini-5',  name: 'Quilted Princess',     sub: 'Quilted fondant with large bow',      price: 24, img: MINI('afb4160a-f39e-4635-b5ca-96d5ec35f66e/mini-5.jpg') },
+        { id: 'mini-6',  name: 'Pink Rosette Mini',    sub: 'Pink cake with small roses',          price: 19, img: MINI('f4f182fa-039e-4930-a598-ad7b1dd7c110/mini-6.jpg') },
+        { id: 'mini-7',  name: 'Pearl Bow Mini',       sub: 'Pink draped bow with pearls',         price: 23, img: MINI('2ed2e195-d0a7-40a4-923c-d9cfb3826034/mini-7.jpg') },
+        { id: 'mini-8',  name: 'Golden Bow Mini',      sub: 'Vintage cream with gold ribbons',     price: 22, img: MINI('a2d4780c-3b00-4aa3-a904-4657f6dac4aa/mini-8.jpg') },
+        { id: 'mini-9',  name: 'Mi Amor Mini',         sub: 'Cream piped with chocolate hearts',   price: 21, img: MINI('1e02f52e-18e6-4e48-8d2a-623463b2eec8/mini-9.jpg') },
+        { id: 'mini-10', name: 'Midnight Bow Mini',    sub: 'Black cake with white ribbons',       price: 22, img: MINI('c1400e36-6d20-4a98-ac75-dab244b0782e/mini-10.jpg') },
+      ],
+      torta: [
+        { id: 'torta-1', name: 'Classic Vanilla Torta', sub: 'Layered vanilla sponge & cream', price: 35, img: MINI('3f60555e-10c8-40ec-a7da-cc58a51a3fa7/mini-4.jpg'), sizes: [{label:'1 kg',price:35},{label:'2 kg',price:65},{label:'3 kg',price:95},{label:'4 kg',price:125}] },
+        { id: 'torta-2', name: 'Chocolate Torta',       sub: 'Rich dark chocolate layers',     price: 38, img: MINI('1e02f52e-18e6-4e48-8d2a-623463b2eec8/mini-9.jpg'), sizes: [{label:'1 kg',price:38},{label:'2 kg',price:70},{label:'3 kg',price:100},{label:'4 kg',price:130}] },
+        { id: 'torta-3', name: 'Strawberry Torta',      sub: 'Fresh strawberries & cream',     price: 40, img: MINI('f4f182fa-039e-4930-a598-ad7b1dd7c110/mini-6.jpg'), sizes: [{label:'1 kg',price:40},{label:'2 kg',price:75},{label:'3 kg',price:108},{label:'4 kg',price:140}] },
+      ],
+      graduation: [],
       'birthday-girls': [], 'birthday-boys': [], 'birthday-women': [], 'birthday-men': [],
       proposal: [], anniversary: [], wedding: [], evangelina: [],
     };
