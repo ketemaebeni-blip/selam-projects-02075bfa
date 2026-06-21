@@ -473,6 +473,27 @@
       color: var(--choc);
     }
 
+    .size-selector {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0 4px;
+    }
+    .size-opt { cursor: pointer; }
+    .size-opt input { position: absolute; opacity: 0; pointer-events: none; }
+    .size-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 10px; border-radius: 999px;
+      background: var(--blush); color: var(--choc);
+      font-size: .72rem; font-weight: 700;
+      border: 1.5px solid transparent; transition: all .15s ease;
+    }
+    .size-pill em { font-style: normal; color: var(--choc-mid); font-weight: 600; }
+    .size-opt input:checked + .size-pill {
+      background: var(--choc); color: #fff; border-color: var(--choc);
+    }
+    .size-opt input:checked + .size-pill em { color: rgba(255,255,255,.85); }
+
     .stepper {
       display: flex;
       align-items: center;
@@ -1768,10 +1789,28 @@
     // ================= DATA =================
     // Products are loaded from the database (shop_items table). Admins manage all items
     // from /admin — what they add/edit/delete/toggle there is exactly what shows here.
+    const MINI = (id) => `/__l5e/assets-v1/${id}`;
     let products = {
       'bridal-shower': [], 'baby-shower': [], christening: [], engagement: [],
       'six-month': [], 'cake-package': [], 'graduation-kids': [], nikah: [],
-      'mini-cake': [], torta: [], graduation: [],
+      'mini-cake': [
+        { id: 'mini-1',  name: 'Blue Ribbon Mini',     sub: 'Light blue buttercream with ribbons', price: 18, img: MINI('f950a66a-099d-4efa-abba-5f006edf02bd/mini-1.jpg') },
+        { id: 'mini-2',  name: 'Arsenal Fan Mini',     sub: 'Custom team-themed cake',             price: 22, img: MINI('81051af5-e092-4bdd-baeb-4d67e4957c5f/mini-2.jpg') },
+        { id: 'mini-3',  name: 'Mama Rose Mini',       sub: 'Red velvet with sugar rose',          price: 24, img: MINI('0119b1c6-2bbd-4e40-89bb-799876a0a7d7/mini-3.jpg') },
+        { id: 'mini-4',  name: 'Cream Bow Mini',       sub: 'Cream cake with pink piped bows',     price: 20, img: MINI('3f60555e-10c8-40ec-a7da-cc58a51a3fa7/mini-4.jpg') },
+        { id: 'mini-5',  name: 'Quilted Princess',     sub: 'Quilted fondant with large bow',      price: 24, img: MINI('afb4160a-f39e-4635-b5ca-96d5ec35f66e/mini-5.jpg') },
+        { id: 'mini-6',  name: 'Pink Rosette Mini',    sub: 'Pink cake with small roses',          price: 19, img: MINI('f4f182fa-039e-4930-a598-ad7b1dd7c110/mini-6.jpg') },
+        { id: 'mini-7',  name: 'Pearl Bow Mini',       sub: 'Pink draped bow with pearls',         price: 23, img: MINI('2ed2e195-d0a7-40a4-923c-d9cfb3826034/mini-7.jpg') },
+        { id: 'mini-8',  name: 'Golden Bow Mini',      sub: 'Vintage cream with gold ribbons',     price: 22, img: MINI('a2d4780c-3b00-4aa3-a904-4657f6dac4aa/mini-8.jpg') },
+        { id: 'mini-9',  name: 'Mi Amor Mini',         sub: 'Cream piped with chocolate hearts',   price: 21, img: MINI('1e02f52e-18e6-4e48-8d2a-623463b2eec8/mini-9.jpg') },
+        { id: 'mini-10', name: 'Midnight Bow Mini',    sub: 'Black cake with white ribbons',       price: 22, img: MINI('c1400e36-6d20-4a98-ac75-dab244b0782e/mini-10.jpg') },
+      ],
+      torta: [
+        { id: 'torta-1', name: 'Classic Vanilla Torta', sub: 'Layered vanilla sponge & cream', price: 35, img: MINI('3f60555e-10c8-40ec-a7da-cc58a51a3fa7/mini-4.jpg'), sizes: [{label:'1 kg',price:35},{label:'2 kg',price:65},{label:'3 kg',price:95},{label:'4 kg',price:125}] },
+        { id: 'torta-2', name: 'Chocolate Torta',       sub: 'Rich dark chocolate layers',     price: 38, img: MINI('1e02f52e-18e6-4e48-8d2a-623463b2eec8/mini-9.jpg'), sizes: [{label:'1 kg',price:38},{label:'2 kg',price:70},{label:'3 kg',price:100},{label:'4 kg',price:130}] },
+        { id: 'torta-3', name: 'Strawberry Torta',      sub: 'Fresh strawberries & cream',     price: 40, img: MINI('f4f182fa-039e-4930-a598-ad7b1dd7c110/mini-6.jpg'), sizes: [{label:'1 kg',price:40},{label:'2 kg',price:75},{label:'3 kg',price:108},{label:'4 kg',price:140}] },
+      ],
+      graduation: [],
       'birthday-girls': [], 'birthday-boys': [], 'birthday-women': [], 'birthday-men': [],
       proposal: [], anniversary: [], wedding: [], evangelina: [],
     };
@@ -1885,14 +1924,24 @@
       document.getElementById('detailSubtitle').textContent = meta.title + ' Designs';
 
       const list = document.getElementById('productList');
-      list.innerHTML = products[cat].map((p, i) => `
+      list.innerHTML = products[cat].map((p, i) => {
+        const sizeBlock = p.sizes ? `
+          <div class="size-selector" role="radiogroup" aria-label="Choose size for ${p.name}">
+            ${p.sizes.map((s, si) => `
+              <label class="size-opt">
+                <input type="radio" name="size-${p.id}" value="${si}" ${si===0?'checked':''} onchange="setProductSize('${p.id}', ${si})" />
+                <span class="size-pill"><strong>${s.label}</strong><em>$${s.price}</em></span>
+              </label>`).join('')}
+          </div>` : '';
+        return `
         <div class="product-list-item fade-up d${i+1}" style="animation-delay:${i*0.06}s">
           <img src="${p.img}" alt="${p.name}" class="product-list-img" loading="lazy" />
           <div class="product-list-info">
             <div class="product-list-name">${p.name}</div>
             <div class="product-list-sub">${p.sub}</div>
+            ${sizeBlock}
             <div class="product-list-foot">
-              <span class="product-list-price">$${p.price}</span>
+              <span class="product-list-price" id="price-${p.id}">$${p.sizes ? p.sizes[0].price : p.price}</span>
               <div class="stepper">
                 <button class="step-btn minus" onclick="updateCart('${p.id}', -1, '${cat}')" aria-label="Decrease quantity">−</button>
                 <span class="step-count" id="qty-${p.id}">${getQty(p.id)}</span>
@@ -1900,11 +1949,21 @@
               </div>
             </div>
           </div>
-        </div>
-      `).join('');
+        </div>`;
+      }).join('');
 
       document.getElementById('page-detail').classList.add('active');
       lucide.createIcons();
+    }
+
+    window.selectedSize = window.selectedSize || {};
+    function setProductSize(id, idx) {
+      window.selectedSize[id] = idx;
+      const allProducts = Object.values(products).flat();
+      const p = allProducts.find(x => x.id === id);
+      if (!p || !p.sizes) return;
+      const priceEl = document.getElementById('price-' + id);
+      if (priceEl) priceEl.textContent = '$' + p.sizes[idx].price;
     }
 
     function closeDetail() {
@@ -1963,7 +2022,11 @@
         existing.qty += delta;
         if (existing.qty <= 0) cart = cart.filter(c => c.id !== id);
       } else if (delta > 0) {
-        cart.push({ id, qty: 1, name: product.name, price: product.price, img: product.img });
+        const sizeIdx = window.selectedSize?.[id] ?? 0;
+        const useSize = product.sizes ? product.sizes[sizeIdx] : null;
+        const price = useSize ? useSize.price : product.price;
+        const nameWithSize = useSize ? `${product.name} (${useSize.label})` : product.name;
+        cart.push({ id, qty: 1, name: nameWithSize, price, img: product.img });
       }
 
       const qtyEl = document.getElementById('qty-' + id);
