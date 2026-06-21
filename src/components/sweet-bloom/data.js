@@ -144,21 +144,7 @@
 
     /* ═══ CATEGORIES ═══ */
     const CIMG = p => `https://images.unsplash.com/${p}?auto=format&fit=crop&w=300&q=80`;
-    export const CATEGORIES = [
-      { id: "all", img: CIMG("photo-1488477181946-6428a0291777") },
-      { id: "bridal-shower", img: CIMG("photo-1519741497674-611481863552") },
-      { id: "baby-shower", img: CIMG("photo-1606313564200-e75d5e30476c") },
-      { id: "christening", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "engagement", img: CIMG("photo-1464349095431-e9a21285b5f3") },
-      { id: "six-month", img: CIMG("photo-1535254973040-607b474cb50d") },
-      { id: "cake-package", img: CIMG("photo-1607920591413-4ec007e70023") },
-      { id: "nikah", img: CIMG("photo-1622896784083-cc051313dbab") },
-      { id: "mini-cake", img: CIMG("photo-1486427944299-d1955d23e34d") },
-      { id: "torta", img: CIMG("photo-1535141192574-5d4897c12636") },
-      { id: "proposal", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "anniversary", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "evangelina", img: CIMG("photo-1578985545062-69928b1d9587") },
-    ];
+    export const CATEGORIES = [];
 
     /* ═══ DISHES ═══ */
     const IMG = p => `https://images.unsplash.com/${p}?auto=format&fit=crop&w=700&q=80`;
