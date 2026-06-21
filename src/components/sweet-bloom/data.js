@@ -144,44 +144,8 @@
 
     /* ═══ CATEGORIES ═══ */
     const CIMG = p => `https://images.unsplash.com/${p}?auto=format&fit=crop&w=300&q=80`;
-    export const CATEGORIES = [
-      { id: "all", img: CIMG("photo-1488477181946-6428a0291777") },
-      { id: "bridal-shower", img: CIMG("photo-1519741497674-611481863552") },
-      { id: "baby-shower", img: CIMG("photo-1606313564200-e75d5e30476c") },
-      { id: "christening", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "engagement", img: CIMG("photo-1464349095431-e9a21285b5f3") },
-      { id: "six-month", img: CIMG("photo-1535254973040-607b474cb50d") },
-      { id: "cake-package", img: CIMG("photo-1607920591413-4ec007e70023") },
-      { id: "nikah", img: CIMG("photo-1622896784083-cc051313dbab") },
-      { id: "mini-cake", img: CIMG("photo-1486427944299-d1955d23e34d") },
-      { id: "torta", img: CIMG("photo-1535141192574-5d4897c12636") },
-      { id: "proposal", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "anniversary", img: CIMG("photo-1557925923-cd4648e211a0") },
-      { id: "evangelina", img: CIMG("photo-1578985545062-69928b1d9587") },
-    ];
+    export const CATEGORIES = [];
 
     /* ═══ DISHES ═══ */
     const IMG = p => `https://images.unsplash.com/${p}?auto=format&fit=crop&w=700&q=80`;
-    export const DISHES = [
-      { id: 7, cat: "nikah", img: IMG("photo-1622896784083-cc051313dbab"), tag: "ROMANTIC", price: 4200, currency: "ETB", descEN: "Soft blush rosette nikah cake — romantic and timeless.", ingredients: [["Strawberry","Strawberry"],["Butter","Butter"],["Cream Cheese","Cream Cheese"],["Eggs","Eggs"]], nameEN: "Rosette Nikah Cake", subEN: "Blush Buttercream Roses" },
-      { id: 7, cat: "nikah", img: IMG("photo-1622896784083-cc051313dbab"), tag: "ROMANTIC", price: 4200, currency: "ETB", descEN: "Soft blush rosette nikah cake — romantic and timeless.", ingredients: [["Strawberry","Strawberry"],["Butter","Butter"],["Cream Cheese","Cream Cheese"],["Eggs","Eggs"]], nameEN: "Rosette Nikah Cake", subEN: "Blush Buttercream Roses" },
-
-      { id: 8, cat: "torta", img: IMG("photo-1565958011703-44f9829ba187"), tag: "CREAMY", price: 620, currency: "ETB", descEN: "Luscious strawberry torta on a buttery graham crust with fresh berries.", ingredients: [["Strawberry","Strawberry"],["Cream Cheese","Cream Cheese"],["Graham","Graham"],["Butter","Butter"]], nameEN: "Strawberry Torta", subEN: "1kg / 2kg / 3kg / 4kg" },
-      { id: 9, cat: "mini-cake", img: IMG("photo-1486427944299-d1955d23e34d"), tag: "CUTE", price: 140, currency: "ETB", descEN: "Mini lunchbox cakes with swirls of buttercream — perfect single-serve treats.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Eggs","Eggs"],["Sugar","Sugar"]], nameEN: "Mini Lunchbox Cake", subEN: "Buttercream Swirl" },
-      { id: 10, cat: "mini-cake", img: IMG("photo-1564355808539-22fda35bed7e"), tag: "FUDGY", price: 170, currency: "ETB", descEN: "Ultra-fudgy dark chocolate mini cake with a crinkly top.", ingredients: [["Dark Choc","Dark Choc"],["Butter","Butter"],["Eggs","Eggs"],["Sugar","Sugar"]], nameEN: "Chocolate Mini Cake", subEN: "Ultra Fudgy" },
-      { id: 11, cat: "six-month", img: IMG("photo-1499636136210-6f4ee915583e"), tag: "MILESTONE", price: 600, currency: "ETB", descEN: "Adorable 6-month milestone cake to celebrate baby's half-birthday.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Eggs","Eggs"],["Sugar","Sugar"]], nameEN: "Half-Birthday Cake", subEN: "6-Month Milestone" },
-
-      { id: 12, cat: "cake-package", img: IMG("photo-1607920591413-4ec007e70023"), tag: "GIFT", price: 1500, currency: "ETB", descEN: "Curated cake & package with cupcakes, cookies, brownies and chocolates — beautifully boxed.", ingredients: [["Chocolate","Chocolate"],["Butter","Butter"],["Vanilla","Vanilla"],["Sugar","Sugar"]], nameEN: "Sweet Treats Package", subEN: "Curated Gift Box" },
-      { id: 13, cat: "cake-package", img: IMG("photo-1549007994-cb92caebd54b"), tag: "LUXURY", price: 2200, currency: "ETB", descEN: "Premium package with a small cake, macarons, truffles and a hand-tied bow.", ingredients: [["Chocolate","Chocolate"],["Cream Cheese","Cream Cheese"],["Butter","Butter"],["Vanilla","Vanilla"]], nameEN: "Premium Cake Package", subEN: "Cake, Macarons & Truffles" },
-      { id: 14, cat: "bridal-shower", img: IMG("photo-1519741497674-611481863552"), tag: "BRIDAL", price: 1800, currency: "ETB", descEN: "Elegant bridal shower cake with floral details and pastel touches.", ingredients: [["Vanilla","Vanilla"],["Cream Cheese","Cream Cheese"],["Butter","Butter"],["Eggs","Eggs"]], nameEN: "Bridal Shower Cake", subEN: "Floral & Pastel" },
-
-      { id: 15, cat: "anniversary", img: IMG("photo-1557925923-cd4648e211a0"), tag: "ROMANTIC", price: 1200, currency: "ETB", descEN: "Heart-shaped anniversary cake with rose decorations and romantic touches.", ingredients: [["Strawberry","Strawberry"],["Cream Cheese","Cream Cheese"],["Butter","Butter"],["Eggs","Eggs"]], nameEN: "Heart Anniversary Cake", subEN: "Rose Decoration" },
-      { id: 16, cat: "anniversary", img: IMG("photo-1535254973040-607b474cb50d"), tag: "ELEGANT", price: 1400, currency: "ETB", descEN: "Two-tier anniversary cake with gold accents — celebrate the milestone in style.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Eggs","Eggs"],["Sugar","Sugar"]], nameEN: "Gold Accent Two-Tier", subEN: "Milestone Celebration" },
-      { id: 17, cat: "engagement", img: IMG("photo-1464349095431-e9a21285b5f3"), tag: "CLASSIC", price: 1100, currency: "ETB", descEN: "Classic red velvet engagement cake with elegant piping.", ingredients: [["Red Dye","Red Dye"],["Cream Cheese","Cream Cheese"],["Butter","Butter"],["Eggs","Eggs"]], nameEN: "Engagement Red Velvet", subEN: "Elegant Piping" },
-
-
-
-      { id: 21, cat: "baby-shower", img: IMG("photo-1606313564200-e75d5e30476c"), tag: "BABY", price: 1100, currency: "ETB", descEN: "Sweet baby shower cake — pastel colors and adorable fondant toppers.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Eggs","Eggs"],["Sugar","Sugar"]], nameEN: "Baby Shower Cake", subEN: "Pastel Fondant" },
-      { id: 22, cat: "proposal", img: IMG("photo-1551106652-a5bcf4b29ab6"), tag: "PROPOSAL", price: 1500, currency: "ETB", descEN: "Surprise proposal cake with personalised message — make the moment unforgettable.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Sugar","Sugar"],["Eggs","Eggs"]], nameEN: "Proposal Surprise Cake", subEN: "Personalised Message" },
-      { id: 23, cat: "evangelina", img: IMG("photo-1565958011703-44f9829ba187"), tag: "CUSTOM", price: 1300, currency: "ETB", descEN: "Evangelina signature / fully custom cake — tell us your theme and we'll design it for you.", ingredients: [["Vanilla","Vanilla"],["Butter","Butter"],["Cream Cheese","Cream Cheese"],["Eggs","Eggs"]], nameEN: "Evangelina Custom Cake", subEN: "Signature Style" },
-    ];
+    export const DISHES = [];
