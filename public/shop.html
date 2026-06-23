@@ -2276,14 +2276,34 @@
           if (!key || !(key in window.products)) continue;
           (grouped[key] ||= []).push(row);
         }
-        // Only overwrite categories that came back with items, preserving fallback for empties.
-        for (const k of Object.keys(grouped)) window.products[k] = grouped[k];
+        // Replace every known category with its loaded list (empty if none) so the
+        // storefront shows the empty-state instead of hardcoded placeholders.
+        for (const k of Object.keys(window.products)) {
+          if (k === "available-today") continue;
+          window.products[k] = grouped[k] || [];
+        }
         if (todays.length) { window.availableToday.length = 0; window.availableToday.push(...todays); }
-        // Re-render any currently open list view
         // Re-render whichever list/detail view is currently open so toggles reflect immediately.
         if (document.getElementById("page-available")?.classList.contains("active")) window.openAvailableToday?.();
         if (document.getElementById("page-detail")?.classList.contains("active") && window.currentCat) window.openCategory?.(window.currentCat);
       } catch (err) { console.error("Shop items load failed", err); }
+    }
+
+    async function loadCategoryImages() {
+      try {
+        const { data, error } = await sb.from("category_images").select("cat, img");
+        if (error) { console.error(error); return; }
+        for (const row of (data ?? [])) {
+          if (window.categoryMeta?.[row.cat]) {
+            window.categoryMeta[row.cat].img = row.img;
+          }
+        }
+        // Re-render category grid + open detail to reflect new covers
+        window.renderCategoryGrid?.();
+        if (document.getElementById("page-detail")?.classList.contains("active") && window.currentCat) {
+          window.openCategory?.(window.currentCat);
+        }
+      } catch (err) { console.error("Category images load failed", err); }
     }
 
     // Patch renderers to add a sold-out class on the card/list item
@@ -2390,12 +2410,14 @@
     document.addEventListener("DOMContentLoaded", () => {
       obs.observe(document.body, { childList: true, subtree: true });
       loadItems();
+      loadCategoryImages();
     });
 
-    // Live updates when admin toggles availability or edits items
+    // Live updates when admin toggles availability, edits items, or changes category photos
     sb.channel("shop_live")
       .on("postgres_changes", { event: "*", schema: "public", table: "shop_items" }, loadItems)
       .on("postgres_changes", { event: "*", schema: "public", table: "shop_item_availability" }, loadItems)
+      .on("postgres_changes", { event: "*", schema: "public", table: "category_images" }, loadCategoryImages)
       .subscribe();
   </script>
 </body>
