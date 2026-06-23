@@ -2230,15 +2230,12 @@
   <!-- BACKEND INTEGRATION: load items from Supabase + place real orders via /api/public/orders + Telegram -->
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
-    const SUPABASE_URL = "https://lewsefuoepmzrhptedkl.supabase.co";
-    const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxld3NlZnVvZXBtenJocHRlZGtsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE0NTExOTEsImV4cCI6MjA5NzAyNzE5MX0.6SNWyWmN6szWoosOA87_lzcHo7_fbz73AHkLjIh_FsQ";
+    const SUPABASE_URL = "https://ynpsouwlxvsqsxqxokfl.supabase.co";
+    const SUPABASE_ANON = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlucHNvdXdseHZzcXN4cXhva2ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIwNDIxMTUsImV4cCI6MjA5NzYxODExNX0.JLY0DvKGL5MGnAYVk4Unf1TUTe03Fe7WzFJaaff68LM";
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON);
 
-    const CAT_KEY = {
-      "Fasting": "fasting", "Kerestena": "kerestena", "Yeshemgelena": "yeshemgelena",
-      "Graduation": "graduation", "Wedding": "wedding", "Birthday": "birthday",
-    };
-
+    // Categories from the admin dashboard are stored as slug strings that match
+    // the keys in window.products. "Available Today" is handled separately.
     async function loadItems() {
       try {
         const [{ data: items, error: e1 }, { data: avail, error: e2 }] = await Promise.all([
@@ -2255,9 +2252,9 @@
             price: Number(it.price), img: it.img,
             soldOut: !it.available || outIds.has(it.id),
           };
-          if (it.cat === "Available Today") { todays.push(row); continue; }
-          const key = CAT_KEY[it.cat];
-          if (!key) continue;
+          if (it.cat === "Available Today" || it.cat === "available-today") { todays.push(row); continue; }
+          const key = it.cat;
+          if (!key || !(key in window.products)) continue;
           (grouped[key] ||= []).push(row);
         }
         // Only overwrite categories that came back with items, preserving fallback for empties.

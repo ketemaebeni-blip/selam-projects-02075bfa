@@ -32,7 +32,33 @@ type ShopItem = {
   sort_order: number;
 };
 
-const CATEGORIES = ["Fasting", "Kerestena", "Yeshemgelena", "Graduation", "Wedding", "Birthday", "Available Today"];
+// Category slugs MUST match the keys in public/shop.html `products` so the
+// dashboard and storefront stay in sync. Label is what we show in the admin UI.
+const CATEGORY_OPTIONS: { value: string; label: string }[] = [
+  { value: "bridal-shower",   label: "Bridal Shower" },
+  { value: "baby-shower",     label: "Baby Shower" },
+  { value: "christening",     label: "Christening" },
+  { value: "engagement",      label: "Engagement" },
+  { value: "six-month",       label: "6-Month" },
+  { value: "cake-package",    label: "Cake & Package" },
+  { value: "graduation-kids", label: "Graduation for Kids" },
+  { value: "nikah",           label: "Nikah" },
+  { value: "mini-cake",       label: "Mini Cake" },
+  { value: "torta",           label: "Torta" },
+  { value: "graduation",      label: "Graduation" },
+  { value: "birthday-girls",  label: "Birthday — Girls" },
+  { value: "birthday-boys",   label: "Birthday — Boys" },
+  { value: "birthday-women",  label: "Birthday — Women" },
+  { value: "birthday-men",    label: "Birthday — Men" },
+  { value: "proposal",        label: "Proposal" },
+  { value: "anniversary",     label: "Anniversary" },
+  { value: "wedding",         label: "Wedding" },
+  { value: "evangelina",      label: "Evangelina" },
+  { value: "Available Today", label: "Available Today" },
+];
+const CATEGORIES = CATEGORY_OPTIONS.map(c => c.value);
+const CATEGORY_LABEL = (v: string) =>
+  CATEGORY_OPTIONS.find(c => c.value === v)?.label ?? v;
 
 type OrderRow = {
   id: string;
@@ -437,7 +463,7 @@ function AdminDashboard() {
                   <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}
                     className="ma-status-select" style={{ minWidth: 140 }}>
                     <option value="All">All categories</option>
-                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    {CATEGORY_OPTIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                   <select value={filterAvail} onChange={(e) => setFilterAvail(e.target.value as any)}
                     className="ma-status-select" style={{ minWidth: 130 }}>
@@ -478,7 +504,7 @@ function AdminDashboard() {
                               </div>
                             </div>
                           </td>
-                          <td><span className="ma-cat-tag">{it.cat}</span></td>
+                          <td><span className="ma-cat-tag">{CATEGORY_LABEL(it.cat)}</span></td>
                           <td><span className="ma-price">{fmtBirr(it.price)}</span></td>
                           <td>
                             <span style={{
@@ -659,7 +685,7 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
             <Field label="Category">
               <select value={form.cat} onChange={(e) => update("cat", e.target.value)} style={inp}>
-                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                {CATEGORY_OPTIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
               </select>
             </Field>
             <Field label="Price (Birr)">
