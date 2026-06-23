@@ -1924,7 +1924,26 @@
       document.getElementById('detailSubtitle').textContent = meta.title + ' Designs';
 
       const list = document.getElementById('productList');
-      list.innerHTML = products[cat].map((p, i) => {
+      const catItems = (products[cat] || []).filter(p => !p.isPlaceholder);
+      if (catItems.length === 0) {
+        list.innerHTML = `
+          <div class="empty-category" style="text-align:center;padding:60px 20px;grid-column:1/-1;">
+            <div class="empty-icon-wrap" style="margin:0 auto 16px;width:72px;height:72px;border-radius:50%;background:#F9D9D3;display:flex;align-items:center;justify-content:center;">
+              <i data-lucide="cake" style="width:34px;height:34px;color:var(--choc-mid);"></i>
+            </div>
+            <h3 style="font-family:var(--font-display);color:var(--choc-deep);margin:0 0 8px;font-size:1.4rem;">No cakes here yet</h3>
+            <p style="color:#7a6a5c;max-width:380px;margin:0 auto 20px;line-height:1.5;">
+              We're still designing beautiful ${meta.title.toLowerCase()} cakes for this collection. Send us a message and we'll create something custom for you.
+            </p>
+            <button onclick="closeDetail();setTimeout(()=>document.querySelector('[data-nav=\\'contact\\']')?.click(),200);" class="btn-primary" style="background:var(--choc-deep);color:#fff;border:none;padding:12px 24px;border-radius:999px;font-weight:700;cursor:pointer;">
+              Request a custom cake
+            </button>
+          </div>`;
+        document.getElementById('page-detail').classList.add('active');
+        lucide.createIcons();
+        return;
+      }
+      list.innerHTML = catItems.map((p, i) => {
         const sizeBlock = p.sizes ? `
           <div class="size-selector" role="radiogroup" aria-label="Choose size for ${p.name}">
             ${p.sizes.map((s, si) => `
