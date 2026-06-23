@@ -19,7 +19,9 @@ export const Route = createFileRoute("/admin/")({
 const fmtBirr = (n: number) =>
   `Birr ${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
-type Section = "overview" | "orders" | "menu" | "costs" | "premises" | "sales";
+type Section = "overview" | "orders" | "menu" | "categories" | "costs" | "premises" | "sales";
+
+type CategoryImage = { cat: string; img: string };
 
 type ShopItem = {
   id: string;
@@ -242,6 +244,7 @@ function AdminDashboard() {
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "orders", label: "Orders", icon: ShoppingBag },
     { id: "menu", label: "Shop Items", icon: Tag },
+    { id: "categories", label: "Category Photos", icon: LayoutGrid },
     { id: "sales", label: "Sales Tracking", icon: BarChart3 },
     { id: "costs", label: "Costs", icon: DollarSign },
     { id: "premises", label: "Premises", icon: Building2 },
@@ -544,6 +547,7 @@ function AdminDashboard() {
           </>
         )}
 
+        {section === "categories" && <CategoryImagesSection items={items} />}
         {section === "costs" && <CostsSection />}
         {section === "premises" && <PremisesSection />}
         {section === "sales" && <SalesSection />}
@@ -735,5 +739,122 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <span style={{ fontSize: 12, fontWeight: 700, color: "#9a8b7c", letterSpacing: ".04em", textTransform: "uppercase" }}>{label}</span>
       {children}
     </label>
+  );
+}
+
+function CategoryImagesSection({ items }: { items: ShopItem[] }) {
+  const [imgs, setImgs] = useState<Record<string, string>>({});
+  const [uploading, setUploading] = useState<string | null>(null);
+  const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
+
+  const load = useCallback(async () => {
+    const { data, error } = await supabase
+      .from("category_images" as any)
+      .select("cat, img");
+    if (error) { console.error(error); return; }
+    const m: Record<string, string> = {};
+    for (const r of (data ?? []) as unknown as CategoryImage[]) m[r.cat] = r.img;
+    setImgs(m);
+  }, []);
+
+  useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    const ch = supabase
+      .channel("category_images_admin")
+      .on("postgres_changes", { event: "*", schema: "public", table: "category_images" }, () => load())
+      .subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, [load]);
+
+  async function uploadFor(cat: string, file: File) {
+    setUploading(cat);
+    try {
+      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+      const path = `categories/${cat}-${Date.now()}.${ext}`;
+      const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
+        upsert: true, contentType: file.type || "image/jpeg",
+      });
+      if (upErr) { alert("Upload failed: " + upErr.message); return; }
+      const { data, error: sErr } = await supabase.storage.from("cake-images")
+        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
+      if (sErr || !data) { alert("Could not get image URL"); return; }
+      const { error: dbErr } = await supabase
+        .from("category_images" as any)
+        .upsert({ cat, img: data.signedUrl });
+      if (dbErr) { alert("Save failed: " + dbErr.message); return; }
+      setImgs(m => ({ ...m, [cat]: data.signedUrl }));
+    } finally {
+      setUploading(null);
+    }
+  }
+
+  async function removeImage(cat: string) {
+    if (!confirm("Remove cover photo for this category?")) return;
+    const { error } = await supabase.from("category_images" as any).delete().eq("cat", cat);
+    if (error) { alert("Remove failed: " + error.message); return; }
+    setImgs(m => { const n = { ...m }; delete n[cat]; return n; });
+  }
+
+  const counts: Record<string, number> = {};
+  for (const it of items) counts[it.cat] = (counts[it.cat] || 0) + 1;
+
+  return (
+    <>
+      <h1 className="ma-page-title">Category Photos</h1>
+      <p className="ma-page-sub">Upload a cover image for each category. Changes appear on the storefront instantly.</p>
+      <section className="ma-card">
+        <div className="ma-card-head"><h2>Categories ({CATEGORY_OPTIONS.length - 1})</h2></div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 16, padding: 16 }}>
+          {CATEGORY_OPTIONS.filter(c => c.value !== "Available Today").map(c => {
+            const url = imgs[c.value];
+            const n = counts[c.value] || 0;
+            return (
+              <div key={c.value} style={{
+                border: "1px solid rgba(240,184,174,.4)", borderRadius: 14,
+                overflow: "hidden", background: "white",
+              }}>
+                <div style={{
+                  height: 140, background: "#F9D9D3",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  overflow: "hidden",
+                }}>
+                  {url ? (
+                    <img src={url} alt={c.label} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <span style={{ color: "#9a8b7c", fontSize: 13 }}>No cover photo</span>
+                  )}
+                </div>
+                <div style={{ padding: 12 }}>
+                  <div style={{ fontWeight: 700, color: "#2E1503" }}>{c.label}</div>
+                  <div style={{ fontSize: 12, color: "#9a8b7c", marginBottom: 10 }}>
+                    {n} item{n === 1 ? "" : "s"}
+                  </div>
+                  <input
+                    ref={el => { fileRefs.current[c.value] = el; }}
+                    type="file" accept="image/*" style={{ display: "none" }}
+                    onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFor(c.value, f); e.target.value = ""; }}
+                  />
+                  <div style={{ display: "flex", gap: 6 }}>
+                    <button className="ma-add-btn" disabled={uploading === c.value}
+                      style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                      onClick={() => fileRefs.current[c.value]?.click()}>
+                      <Upload size={14} /> {uploading === c.value ? "Uploading…" : (url ? "Replace" : "Upload")}
+                    </button>
+                    {url && (
+                      <button className="ma-add-btn"
+                        style={{ padding: "6px 10px", background: "#fee2e2", color: "#b91c1c", borderColor: "#fecaca" }}
+                        onClick={() => removeImage(c.value)} title="Remove">
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+    </>
   );
 }

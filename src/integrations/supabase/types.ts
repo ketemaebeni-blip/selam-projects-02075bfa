@@ -92,6 +92,27 @@ export type Database = {
         }
         Relationships: []
       }
+      category_images: {
+        Row: {
+          cat: string
+          img: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          cat: string
+          img: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          cat?: string
+          img?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       operational_costs: {
         Row: {
           category: Database["public"]["Enums"]["cost_category"]
