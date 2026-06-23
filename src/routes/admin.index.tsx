@@ -753,7 +753,7 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
       .select("cat, img");
     if (error) { console.error(error); return; }
     const m: Record<string, string> = {};
-    for (const r of (data ?? []) as CategoryImage[]) m[r.cat] = r.img;
+    for (const r of (data ?? []) as unknown as CategoryImage[]) m[r.cat] = r.img;
     setImgs(m);
   }, []);
 
