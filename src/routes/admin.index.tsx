@@ -504,7 +504,7 @@ function AdminDashboard() {
                               </div>
                             </div>
                           </td>
-                          <td><span className="ma-cat-tag">{it.cat}</span></td>
+                          <td><span className="ma-cat-tag">{CATEGORY_LABEL(it.cat)}</span></td>
                           <td><span className="ma-price">{fmtBirr(it.price)}</span></td>
                           <td>
                             <span style={{
