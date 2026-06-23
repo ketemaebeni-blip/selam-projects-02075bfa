@@ -1870,6 +1870,12 @@
       lucide.createIcons();
     }
 
+    // Expose to module script for storefront live updates
+    window.categoryMeta = categoryMeta;
+    window.renderCategoryGrid = renderCategoryGrid;
+    window.openCategory = openCategory;
+    window.openAvailableToday = openAvailableToday;
+
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       renderCategoryGrid();
