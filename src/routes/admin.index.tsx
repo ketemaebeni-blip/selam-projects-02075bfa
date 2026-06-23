@@ -463,7 +463,7 @@ function AdminDashboard() {
                   <select value={filterCat} onChange={(e) => setFilterCat(e.target.value)}
                     className="ma-status-select" style={{ minWidth: 140 }}>
                     <option value="All">All categories</option>
-                    {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
+                    {CATEGORY_OPTIONS.map(c => <option key={c.value} value={c.value}>{c.label}</option>)}
                   </select>
                   <select value={filterAvail} onChange={(e) => setFilterAvail(e.target.value as any)}
                     className="ma-status-select" style={{ minWidth: 130 }}>
