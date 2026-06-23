@@ -19,7 +19,9 @@ export const Route = createFileRoute("/admin/")({
 const fmtBirr = (n: number) =>
   `Birr ${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
-type Section = "overview" | "orders" | "menu" | "costs" | "premises" | "sales";
+type Section = "overview" | "orders" | "menu" | "categories" | "costs" | "premises" | "sales";
+
+type CategoryImage = { cat: string; img: string };
 
 type ShopItem = {
   id: string;
@@ -242,6 +244,7 @@ function AdminDashboard() {
     { id: "overview", label: "Overview", icon: LayoutGrid },
     { id: "orders", label: "Orders", icon: ShoppingBag },
     { id: "menu", label: "Shop Items", icon: Tag },
+    { id: "categories", label: "Category Photos", icon: LayoutGrid },
     { id: "sales", label: "Sales Tracking", icon: BarChart3 },
     { id: "costs", label: "Costs", icon: DollarSign },
     { id: "premises", label: "Premises", icon: Building2 },
@@ -544,6 +547,7 @@ function AdminDashboard() {
           </>
         )}
 
+        {section === "categories" && <CategoryImagesSection items={items} />}
         {section === "costs" && <CostsSection />}
         {section === "premises" && <PremisesSection />}
         {section === "sales" && <SalesSection />}
