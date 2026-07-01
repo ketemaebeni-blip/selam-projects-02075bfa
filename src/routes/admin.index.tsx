@@ -898,13 +898,13 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
                   </div>
                   <input
                     ref={el => { fileRefs.current[c.value] = el; }}
-                    type="file" accept="image/*" style={{ display: "none" }}
+                    type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{ display: "none" }}
                     onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFor(c.value, f); e.target.value = ""; }}
                   />
                   <div style={{ display: "flex", gap: 6 }}>
                     <button className="ma-add-btn" disabled={uploading === c.value}
                       style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
-                      onClick={() => fileRefs.current[c.value]?.click()}>
+                      onClick={() => { setErr(c.value, null); fileRefs.current[c.value]?.click(); }}>
                       <Upload size={14} /> {uploading === c.value ? "Uploading…" : (url ? "Replace" : "Upload")}
                     </button>
                     {url && (
@@ -915,6 +915,12 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
                       </button>
                     )}
                   </div>
+                  <div style={{ marginTop: 6, fontSize: 11, color: "#9a8b7c" }}>
+                    JPG, PNG, WEBP, GIF · max 5 MB
+                  </div>
+                  {errors[c.value] && (
+                    <UploadError message={errors[c.value]} onClose={() => setErr(c.value, null)} />
+                  )}
                 </div>
               </div>
             );
