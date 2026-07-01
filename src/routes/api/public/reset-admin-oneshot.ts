@@ -6,8 +6,9 @@ export const Route = createFileRoute("/api/public/reset-admin-oneshot")({
     handlers: {
       POST: async ({ request }) => {
         const body = await request.json().catch(() => ({} as any));
-        const TOKEN = process.env.RESET_ADMIN_TOKEN;
-        if (!TOKEN || body?.token !== TOKEN) {
+        // One-shot literal — this file is deleted immediately after invocation
+        const TOKEN = "oneshot-reset-selam-2026-2f7a1e";
+        if (body?.token !== TOKEN) {
           return new Response("Forbidden", { status: 403 });
         }
         const email = "admin@selamcake.com";
