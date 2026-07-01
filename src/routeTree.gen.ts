@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminImportRouteImport } from './routes/admin.import'
+import { Route as ApiPublicResetAdminOneshotRouteImport } from './routes/api/public/reset-admin-oneshot'
 import { Route as ApiPublicOrdersRouteImport } from './routes/api/public/orders'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,12 @@ const AdminImportRoute = AdminImportRouteImport.update({
   path: '/admin/import',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicResetAdminOneshotRoute =
+  ApiPublicResetAdminOneshotRouteImport.update({
+    id: '/api/public/reset-admin-oneshot',
+    path: '/api/public/reset-admin-oneshot',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicOrdersRoute = ApiPublicOrdersRouteImport.update({
   id: '/api/public/orders',
   path: '/api/public/orders',
@@ -47,6 +54,7 @@ export interface FileRoutesByFullPath {
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/orders': typeof ApiPublicOrdersRoute
+  '/api/public/reset-admin-oneshot': typeof ApiPublicResetAdminOneshotRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +62,7 @@ export interface FileRoutesByTo {
   '/admin/login': typeof AdminLoginRoute
   '/admin': typeof AdminIndexRoute
   '/api/public/orders': typeof ApiPublicOrdersRoute
+  '/api/public/reset-admin-oneshot': typeof ApiPublicResetAdminOneshotRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,6 +71,7 @@ export interface FileRoutesById {
   '/admin/login': typeof AdminLoginRoute
   '/admin/': typeof AdminIndexRoute
   '/api/public/orders': typeof ApiPublicOrdersRoute
+  '/api/public/reset-admin-oneshot': typeof ApiPublicResetAdminOneshotRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -71,8 +81,15 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/'
     | '/api/public/orders'
+    | '/api/public/reset-admin-oneshot'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin/import' | '/admin/login' | '/admin' | '/api/public/orders'
+  to:
+    | '/'
+    | '/admin/import'
+    | '/admin/login'
+    | '/admin'
+    | '/api/public/orders'
+    | '/api/public/reset-admin-oneshot'
   id:
     | '__root__'
     | '/'
@@ -80,6 +97,7 @@ export interface FileRouteTypes {
     | '/admin/login'
     | '/admin/'
     | '/api/public/orders'
+    | '/api/public/reset-admin-oneshot'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -88,6 +106,7 @@ export interface RootRouteChildren {
   AdminLoginRoute: typeof AdminLoginRoute
   AdminIndexRoute: typeof AdminIndexRoute
   ApiPublicOrdersRoute: typeof ApiPublicOrdersRoute
+  ApiPublicResetAdminOneshotRoute: typeof ApiPublicResetAdminOneshotRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -120,6 +139,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminImportRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/reset-admin-oneshot': {
+      id: '/api/public/reset-admin-oneshot'
+      path: '/api/public/reset-admin-oneshot'
+      fullPath: '/api/public/reset-admin-oneshot'
+      preLoaderRoute: typeof ApiPublicResetAdminOneshotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/orders': {
       id: '/api/public/orders'
       path: '/api/public/orders'
@@ -136,6 +162,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminLoginRoute: AdminLoginRoute,
   AdminIndexRoute: AdminIndexRoute,
   ApiPublicOrdersRoute: ApiPublicOrdersRoute,
+  ApiPublicResetAdminOneshotRoute: ApiPublicResetAdminOneshotRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
