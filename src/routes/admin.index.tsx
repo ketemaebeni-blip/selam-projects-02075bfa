@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { CostsSection, PremisesSection, SalesSection } from "@/components/sweet-bloom/AdminFinance";
 import { listCosts, listPremises, getSalesAnalytics } from "@/lib/admin-finance.functions";
+import { uploadAdminImage } from "@/lib/admin-uploads.functions";
 import "@/components/sweet-bloom/menu-admin.css";
 
 export const Route = createFileRoute("/admin/")({
@@ -56,6 +57,17 @@ function UploadError({ message, onClose }: { message: string; onClose: () => voi
       </button>
     </div>
   );
+}
+
+async function fileToBase64(file: File): Promise<string> {
+  const buf = await file.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode.apply(null, Array.from(bytes.subarray(i, i + chunk)) as any);
+  }
+  return btoa(binary);
 }
 
 type Section = "overview" | "orders" | "menu" | "categories" | "costs" | "premises" | "sales";
@@ -627,18 +639,14 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
     if (err) { setUploadError(err); return; }
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const baseId = form.id || `item-${Date.now()}`;
-      const path = `items/${baseId}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
-        upsert: true, contentType: file.type || "image/jpeg",
+      const base64 = await fileToBase64(file);
+      const baseId = (form.id || `item-${Date.now()}`).replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 60);
+      const res = await uploadAdminImage({
+        data: { scope: "items", key: baseId, contentType: file.type, base64 },
       });
-      if (upErr) { setUploadError(`Upload failed: ${upErr.message}`); return; }
-      const { data, error: sErr } = await supabase.storage.from("cake-images").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { setUploadError(`Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
-      update("img", data.signedUrl);
+      update("img", res.url);
     } catch (e: any) {
-      setUploadError(`Upload failed: ${e?.message || "unexpected error"}`);
+      setUploadError(e?.message || "Upload failed");
     } finally {
       setUploading(false);
     }
@@ -834,22 +842,18 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
     if (vErr) { setErr(cat, vErr); return; }
     setUploading(cat);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const path = `categories/${cat}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
-        upsert: true, contentType: file.type || "image/jpeg",
+      const base64 = await fileToBase64(file);
+      const key = cat.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 60);
+      const res = await uploadAdminImage({
+        data: { scope: "categories", key, contentType: file.type, base64 },
       });
-      if (upErr) { setErr(cat, `Upload failed: ${upErr.message}`); return; }
-      const { data, error: sErr } = await supabase.storage.from("cake-images")
-        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { setErr(cat, `Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       const { error: dbErr } = await supabase
         .from("category_images" as any)
-        .upsert({ cat, img: data.signedUrl });
+        .upsert({ cat, img: res.url });
       if (dbErr) { setErr(cat, `Save failed: ${dbErr.message}`); return; }
-      setImgs(m => ({ ...m, [cat]: data.signedUrl }));
+      setImgs(m => ({ ...m, [cat]: res.url }));
     } catch (e: any) {
-      setErr(cat, `Upload failed: ${e?.message || "unexpected error"}`);
+      setErr(cat, e?.message || "Upload failed");
     } finally {
       setUploading(null);
     }
