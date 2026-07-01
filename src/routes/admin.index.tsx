@@ -19,6 +19,45 @@ export const Route = createFileRoute("/admin/")({
 const fmtBirr = (n: number) =>
   `Birr ${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
+// ---- Image upload validation ----
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_IMAGE_EXTS = ["jpg", "jpeg", "png", "webp", "gif"];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+function validateImageFile(file: File): string | null {
+  if (!file) return "No file selected.";
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  const typeOk = file.type ? ALLOWED_IMAGE_TYPES.includes(file.type) : ALLOWED_IMAGE_EXTS.includes(ext);
+  if (!typeOk) {
+    return `Unsupported file type${file.type ? ` "${file.type}"` : ""}. Please upload a JPG, PNG, WEBP, or GIF image.`;
+  }
+  if (file.size === 0) return "This file is empty. Please choose a different image.";
+  if (file.size > MAX_IMAGE_BYTES) {
+    const mb = (file.size / (1024 * 1024)).toFixed(2);
+    return `Image is too large (${mb} MB). Maximum allowed size is 5 MB.`;
+  }
+  return null;
+}
+
+function UploadError({ message, onClose }: { message: string; onClose: () => void }) {
+  return (
+    <div style={{
+      display: "flex", alignItems: "flex-start", gap: 8,
+      background: "#fef2f2", color: "#b91c1c",
+      border: "1px solid #fecaca", borderRadius: 10,
+      padding: "8px 10px", fontSize: 13, marginTop: 8,
+    }}>
+      <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+      <span style={{ flex: 1 }}>{message}</span>
+      <button type="button" onClick={onClose}
+        style={{ background: "transparent", border: 0, color: "#b91c1c", cursor: "pointer", padding: 0, lineHeight: 1 }}
+        aria-label="Dismiss error">
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
 type Section = "overview" | "orders" | "menu" | "categories" | "costs" | "premises" | "sales";
 
 type CategoryImage = { cat: string; img: string };
