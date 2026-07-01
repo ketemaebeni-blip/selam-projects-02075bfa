@@ -19,6 +19,45 @@ export const Route = createFileRoute("/admin/")({
 const fmtBirr = (n: number) =>
   `Birr ${Number(n).toLocaleString("en-US", { maximumFractionDigits: 2 })}`;
 
+// ---- Image upload validation ----
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_IMAGE_EXTS = ["jpg", "jpeg", "png", "webp", "gif"];
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
+
+function validateImageFile(file: File): string | null {
+  if (!file) return "No file selected.";
+  const ext = (file.name.split(".").pop() || "").toLowerCase();
+  const typeOk = file.type ? ALLOWED_IMAGE_TYPES.includes(file.type) : ALLOWED_IMAGE_EXTS.includes(ext);
+  if (!typeOk) {
+    return `Unsupported file type${file.type ? ` "${file.type}"` : ""}. Please upload a JPG, PNG, WEBP, or GIF image.`;
+  }
+  if (file.size === 0) return "This file is empty. Please choose a different image.";
+  if (file.size > MAX_IMAGE_BYTES) {
+    const mb = (file.size / (1024 * 1024)).toFixed(2);
+    return `Image is too large (${mb} MB). Maximum allowed size is 5 MB.`;
+  }
+  return null;
+}
+
+function UploadError({ message, onClose }: { message: string; onClose: () => void }) {
+  return (
+    <div style={{
+      display: "flex", alignItems: "flex-start", gap: 8,
+      background: "#fef2f2", color: "#b91c1c",
+      border: "1px solid #fecaca", borderRadius: 10,
+      padding: "8px 10px", fontSize: 13, marginTop: 8,
+    }}>
+      <AlertCircle size={16} style={{ flexShrink: 0, marginTop: 1 }} />
+      <span style={{ flex: 1 }}>{message}</span>
+      <button type="button" onClick={onClose}
+        style={{ background: "transparent", border: 0, color: "#b91c1c", cursor: "pointer", padding: 0, lineHeight: 1 }}
+        aria-label="Dismiss error">
+        <X size={14} />
+      </button>
+    </div>
+  );
+}
+
 type Section = "overview" | "orders" | "menu" | "categories" | "costs" | "premises" | "sales";
 
 type CategoryImage = { cat: string; img: string };
@@ -575,6 +614,7 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
   const [form, setForm] = useState<ShopItem>(initial);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof ShopItem>(k: K, v: ShopItem[K]) {
@@ -582,6 +622,9 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
   }
 
   async function uploadFile(file: File) {
+    setUploadError(null);
+    const err = validateImageFile(file);
+    if (err) { setUploadError(err); return; }
     setUploading(true);
     try {
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -590,11 +633,12 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
       const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
         upsert: true, contentType: file.type || "image/jpeg",
       });
-      if (upErr) { alert("Upload failed: " + upErr.message); return; }
-      // Bucket is private — use a long-lived signed URL (10 years)
+      if (upErr) { setUploadError(`Upload failed: ${upErr.message}`); return; }
       const { data, error: sErr } = await supabase.storage.from("cake-images").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { alert("Could not get image URL: " + (sErr?.message || "unknown")); return; }
+      if (sErr || !data) { setUploadError(`Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       update("img", data.signedUrl);
+    } catch (e: any) {
+      setUploadError(`Upload failed: ${e?.message || "unexpected error"}`);
     } finally {
       setUploading(false);
     }
@@ -665,13 +709,21 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
                   <span style={{ color: "#9a8b7c", fontSize: 12 }}>No image</span>
                 )}
               </div>
-              <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
+              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{ display: "none" }}
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f); e.target.value = ""; }} />
               <button type="button" className="ma-add-btn" disabled={uploading}
-                onClick={() => fileRef.current?.click()}
+                onClick={() => { setUploadError(null); fileRef.current?.click(); }}
                 style={{ marginTop: 8, width: 120, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                 <Upload size={14} /> {uploading ? "Uploading…" : "Upload"}
               </button>
+              <div style={{ marginTop: 6, fontSize: 11, color: "#9a8b7c", width: 120, lineHeight: 1.3 }}>
+                JPG, PNG, WEBP, GIF · max 5 MB
+              </div>
+              {uploadError && (
+                <div style={{ width: 260 }}>
+                  <UploadError message={uploadError} onClose={() => setUploadError(null)} />
+                </div>
+              )}
             </div>
             <div style={{ display: "grid", gap: 10 }}>
               <Field label="Name">
@@ -745,6 +797,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function CategoryImagesSection({ items }: { items: ShopItem[] }) {
   const [imgs, setImgs] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const load = useCallback(async () => {
@@ -767,7 +820,18 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
     return () => { supabase.removeChannel(ch); };
   }, [load]);
 
+  function setErr(cat: string, msg: string | null) {
+    setErrors(e => {
+      const n = { ...e };
+      if (msg) n[cat] = msg; else delete n[cat];
+      return n;
+    });
+  }
+
   async function uploadFor(cat: string, file: File) {
+    setErr(cat, null);
+    const vErr = validateImageFile(file);
+    if (vErr) { setErr(cat, vErr); return; }
     setUploading(cat);
     try {
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -775,15 +839,17 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
       const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
         upsert: true, contentType: file.type || "image/jpeg",
       });
-      if (upErr) { alert("Upload failed: " + upErr.message); return; }
+      if (upErr) { setErr(cat, `Upload failed: ${upErr.message}`); return; }
       const { data, error: sErr } = await supabase.storage.from("cake-images")
         .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { alert("Could not get image URL"); return; }
+      if (sErr || !data) { setErr(cat, `Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       const { error: dbErr } = await supabase
         .from("category_images" as any)
         .upsert({ cat, img: data.signedUrl });
-      if (dbErr) { alert("Save failed: " + dbErr.message); return; }
+      if (dbErr) { setErr(cat, `Save failed: ${dbErr.message}`); return; }
       setImgs(m => ({ ...m, [cat]: data.signedUrl }));
+    } catch (e: any) {
+      setErr(cat, `Upload failed: ${e?.message || "unexpected error"}`);
     } finally {
       setUploading(null);
     }
@@ -832,13 +898,13 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
                   </div>
                   <input
                     ref={el => { fileRefs.current[c.value] = el; }}
-                    type="file" accept="image/*" style={{ display: "none" }}
+                    type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{ display: "none" }}
                     onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFor(c.value, f); e.target.value = ""; }}
                   />
                   <div style={{ display: "flex", gap: 6 }}>
                     <button className="ma-add-btn" disabled={uploading === c.value}
                       style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
-                      onClick={() => fileRefs.current[c.value]?.click()}>
+                      onClick={() => { setErr(c.value, null); fileRefs.current[c.value]?.click(); }}>
                       <Upload size={14} /> {uploading === c.value ? "Uploading…" : (url ? "Replace" : "Upload")}
                     </button>
                     {url && (
@@ -849,6 +915,12 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
                       </button>
                     )}
                   </div>
+                  <div style={{ marginTop: 6, fontSize: 11, color: "#9a8b7c" }}>
+                    JPG, PNG, WEBP, GIF · max 5 MB
+                  </div>
+                  {errors[c.value] && (
+                    <UploadError message={errors[c.value]} onClose={() => setErr(c.value, null)} />
+                  )}
                 </div>
               </div>
             );
