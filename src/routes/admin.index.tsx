@@ -709,13 +709,21 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
                   <span style={{ color: "#9a8b7c", fontSize: 12 }}>No image</span>
                 )}
               </div>
-              <input ref={fileRef} type="file" accept="image/*" style={{ display: "none" }}
+              <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif" style={{ display: "none" }}
                 onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadFile(f); e.target.value = ""; }} />
               <button type="button" className="ma-add-btn" disabled={uploading}
-                onClick={() => fileRef.current?.click()}
+                onClick={() => { setUploadError(null); fileRef.current?.click(); }}
                 style={{ marginTop: 8, width: 120, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
                 <Upload size={14} /> {uploading ? "Uploading…" : "Upload"}
               </button>
+              <div style={{ marginTop: 6, fontSize: 11, color: "#9a8b7c", width: 120, lineHeight: 1.3 }}>
+                JPG, PNG, WEBP, GIF · max 5 MB
+              </div>
+              {uploadError && (
+                <div style={{ width: 260 }}>
+                  <UploadError message={uploadError} onClose={() => setUploadError(null)} />
+                </div>
+              )}
             </div>
             <div style={{ display: "grid", gap: 10 }}>
               <Field label="Name">
