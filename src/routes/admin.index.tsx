@@ -639,18 +639,14 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
     if (err) { setUploadError(err); return; }
     setUploading(true);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const baseId = form.id || `item-${Date.now()}`;
-      const path = `items/${baseId}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
-        upsert: true, contentType: file.type || "image/jpeg",
+      const base64 = await fileToBase64(file);
+      const baseId = (form.id || `item-${Date.now()}`).replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 60);
+      const res = await uploadAdminImage({
+        data: { scope: "items", key: baseId, contentType: file.type, base64 },
       });
-      if (upErr) { setUploadError(`Upload failed: ${upErr.message}`); return; }
-      const { data, error: sErr } = await supabase.storage.from("cake-images").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { setUploadError(`Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
-      update("img", data.signedUrl);
+      update("img", res.url);
     } catch (e: any) {
-      setUploadError(`Upload failed: ${e?.message || "unexpected error"}`);
+      setUploadError(e?.message || "Upload failed");
     } finally {
       setUploading(false);
     }
