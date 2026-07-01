@@ -797,6 +797,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 function CategoryImagesSection({ items }: { items: ShopItem[] }) {
   const [imgs, setImgs] = useState<Record<string, string>>({});
   const [uploading, setUploading] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const load = useCallback(async () => {
@@ -819,7 +820,18 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
     return () => { supabase.removeChannel(ch); };
   }, [load]);
 
+  function setErr(cat: string, msg: string | null) {
+    setErrors(e => {
+      const n = { ...e };
+      if (msg) n[cat] = msg; else delete n[cat];
+      return n;
+    });
+  }
+
   async function uploadFor(cat: string, file: File) {
+    setErr(cat, null);
+    const vErr = validateImageFile(file);
+    if (vErr) { setErr(cat, vErr); return; }
     setUploading(cat);
     try {
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -827,15 +839,17 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
       const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
         upsert: true, contentType: file.type || "image/jpeg",
       });
-      if (upErr) { alert("Upload failed: " + upErr.message); return; }
+      if (upErr) { setErr(cat, `Upload failed: ${upErr.message}`); return; }
       const { data, error: sErr } = await supabase.storage.from("cake-images")
         .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { alert("Could not get image URL"); return; }
+      if (sErr || !data) { setErr(cat, `Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       const { error: dbErr } = await supabase
         .from("category_images" as any)
         .upsert({ cat, img: data.signedUrl });
-      if (dbErr) { alert("Save failed: " + dbErr.message); return; }
+      if (dbErr) { setErr(cat, `Save failed: ${dbErr.message}`); return; }
       setImgs(m => ({ ...m, [cat]: data.signedUrl }));
+    } catch (e: any) {
+      setErr(cat, `Upload failed: ${e?.message || "unexpected error"}`);
     } finally {
       setUploading(null);
     }
