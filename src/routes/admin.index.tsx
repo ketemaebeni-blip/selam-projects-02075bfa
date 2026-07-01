@@ -842,22 +842,18 @@ function CategoryImagesSection({ items }: { items: ShopItem[] }) {
     if (vErr) { setErr(cat, vErr); return; }
     setUploading(cat);
     try {
-      const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
-      const path = `categories/${cat}-${Date.now()}.${ext}`;
-      const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
-        upsert: true, contentType: file.type || "image/jpeg",
+      const base64 = await fileToBase64(file);
+      const key = cat.replace(/[^a-zA-Z0-9._-]/g, "-").slice(0, 60);
+      const res = await uploadAdminImage({
+        data: { scope: "categories", key, contentType: file.type, base64 },
       });
-      if (upErr) { setErr(cat, `Upload failed: ${upErr.message}`); return; }
-      const { data, error: sErr } = await supabase.storage.from("cake-images")
-        .createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { setErr(cat, `Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       const { error: dbErr } = await supabase
         .from("category_images" as any)
-        .upsert({ cat, img: data.signedUrl });
+        .upsert({ cat, img: res.url });
       if (dbErr) { setErr(cat, `Save failed: ${dbErr.message}`); return; }
-      setImgs(m => ({ ...m, [cat]: data.signedUrl }));
+      setImgs(m => ({ ...m, [cat]: res.url }));
     } catch (e: any) {
-      setErr(cat, `Upload failed: ${e?.message || "unexpected error"}`);
+      setErr(cat, e?.message || "Upload failed");
     } finally {
       setUploading(null);
     }
