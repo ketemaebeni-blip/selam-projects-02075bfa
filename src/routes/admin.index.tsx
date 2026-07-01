@@ -9,6 +9,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { CostsSection, PremisesSection, SalesSection } from "@/components/sweet-bloom/AdminFinance";
 import { listCosts, listPremises, getSalesAnalytics } from "@/lib/admin-finance.functions";
+import { uploadAdminImage } from "@/lib/admin-uploads.functions";
 import "@/components/sweet-bloom/menu-admin.css";
 
 export const Route = createFileRoute("/admin/")({
