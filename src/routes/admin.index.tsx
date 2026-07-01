@@ -614,6 +614,7 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
   const [form, setForm] = useState<ShopItem>(initial);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   function update<K extends keyof ShopItem>(k: K, v: ShopItem[K]) {
@@ -621,6 +622,9 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
   }
 
   async function uploadFile(file: File) {
+    setUploadError(null);
+    const err = validateImageFile(file);
+    if (err) { setUploadError(err); return; }
     setUploading(true);
     try {
       const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
@@ -629,11 +633,12 @@ function ItemEditor({ initial, existingIds, onClose, onSaved }: {
       const { error: upErr } = await supabase.storage.from("cake-images").upload(path, file, {
         upsert: true, contentType: file.type || "image/jpeg",
       });
-      if (upErr) { alert("Upload failed: " + upErr.message); return; }
-      // Bucket is private — use a long-lived signed URL (10 years)
+      if (upErr) { setUploadError(`Upload failed: ${upErr.message}`); return; }
       const { data, error: sErr } = await supabase.storage.from("cake-images").createSignedUrl(path, 60 * 60 * 24 * 365 * 10);
-      if (sErr || !data) { alert("Could not get image URL: " + (sErr?.message || "unknown")); return; }
+      if (sErr || !data) { setUploadError(`Could not get image URL: ${sErr?.message || "unknown error"}`); return; }
       update("img", data.signedUrl);
+    } catch (e: any) {
+      setUploadError(`Upload failed: ${e?.message || "unexpected error"}`);
     } finally {
       setUploading(false);
     }
